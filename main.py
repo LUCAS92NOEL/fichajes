@@ -11,8 +11,14 @@ import time
 import math
 
 # ***************** INI PARAMETROS DE ENTRADA *********************
-url = "https://rodassso.ayesa.com/usuario/Bienvenida.aspx"
-ficharHoyIncidencias = 1;
+url = "https://rodassso.ayesa.com/usuario/Bienvenida.aspx" # URL de la página web a scrapear
+ficharHoyIncidencias = 0;
+ficharDiasPasados = 1;
+urlFechasPasadas = "https://rodassso.ayesa.com/usuario/datosDiarios.aspx?Fecha="
+fechasPasadas = ['04/11/2024', '05/11/2024', '06/11/2024', '07/11/2024', '08/11/2024','11/11/2024']
+
+user= "ntrapero@ayesa.com"
+passs= "4Y3s4123456789-"
 # ***************** FIN PARAMETROS DE ENTRADA *********************
 
 
@@ -20,10 +26,6 @@ ficharHoyIncidencias = 1;
 driver = webdriver.Chrome();
 driver.get(url)
 time.sleep(2)
-
-# URL de la página web a scrapear
-url = "https://news.ycombinator.com/"
-
 
 driver.find_element(By.ID, "i0116").send_keys(user)
 driver.find_element(By.XPATH, '//input[@class="win-button button_primary button ext-button primary ext-primary"]').click()
@@ -72,19 +74,33 @@ if ficharHoyIncidencias==1:
     link_element = driver.find_element(By.ID, "Hyperlink_Hoy").click()
     time.sleep(1)
     
-    # Espera a que el elemento sea visible y luego haz clic en él
+    # PULSAR SOLICITUDES
     driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1].click()  
     time.sleep(2)
     
-
     fichar("08:00" , "entrada")
     if isViernes(fecha):
-        fichar("08:00" , "entrada")
+        fichar("14:30" , "salida")
     else:
         fichar("14:00" , "salida")
         fichar("15:00" , "entrada")
         fichar("17:30" , "salida")
-        
+
+if ficharDiasPasados == 1:
+    for fecha in fechasPasadas:
+        time.sleep(1)
+        driver.get(urlFechasPasadas+fecha)
+        time.sleep(2)
+        driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1].click()    # PULSAR SOLICITUDES
+        time.sleep(1)
+        ## Comprobar si fichar
+        fichar("08:00" , "entrada")
+        if isViernes(fecha):
+            fichar("14:30" , "salida")
+        else:
+            fichar("14:00" , "salida")
+            fichar("15:00" , "entrada")
+            fichar("17:30" , "salida")
 
 time.sleep(120)
     

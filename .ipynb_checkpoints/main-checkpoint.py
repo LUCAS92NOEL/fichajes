@@ -23,8 +23,8 @@ time.sleep(2)
 
 # URL de la página web a scrapear
 url = "https://news.ycombinator.com/"
-user= ""
-passs= ""
+user= "ntrapero@ayesa.com"
+passs= "4Y3s4123456789-"
 
 driver.find_element(By.ID, "i0116").send_keys(user)
 driver.find_element(By.XPATH, '//input[@class="win-button button_primary button ext-button primary ext-primary"]').click()
@@ -42,6 +42,28 @@ def isViernes(fecha_str):
     else:
         return 0;
 
+def fichar(hora , entradaSalida):
+    button_nueva = driver.find_element(By.ID, "Button_Nueva").click()
+    time.sleep(2)
+    
+    # Encuentra el select PICADA OLVIDADA
+    driver.find_element(By.ID, "Dropdown_incidencias2").click()
+    option = driver.find_element(By.XPATH, "//option[@value='85']")
+    option.click()
+
+    input_element = driver.find_element(By.ID, "TextBox_desde")
+    input_element.clear()
+    input_element.send_keys(hora)
+
+     # Localiza el campo textarea por su ID
+    textarea_element = driver.find_element(By.ID, "TextBox_Observaciones")
+    textarea_element.send_keys(entradaSalida)
+
+    # Localiza el botón "Solicitar" usando su ID
+    time.sleep(1)
+    boton_solicitar = driver.find_element(By.ID, "btnSolicitar").click()
+    time.sleep(2)
+    
 
 if ficharHoyIncidencias==1:
     element = driver.find_element(By.XPATH, '//div[@class="saldo_semanal col-lg-3 col-md-3 col-xs-3"]/h2/a[@id="Hyperlink_Hoy"]')
@@ -49,27 +71,20 @@ if ficharHoyIncidencias==1:
     fecha = fecha_texto.split(", ")[1]
     print("fecha {}",fecha)
     link_element = driver.find_element(By.ID, "Hyperlink_Hoy").click()
-    time.sleep(2)
+    time.sleep(1)
     
     # Espera a que el elemento sea visible y luego haz clic en él
-    second_li = driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1]  # [1] es el segundo elemento (0 basado)
-
-    # Realiza el clic en el segundo <li>
-    second_li.click()
-
-    time.sleep(1)
-    button_nueva = driver.find_element(By.ID, "Button_Nueva").click()
+    driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1].click()  
     time.sleep(2)
-
-    #Pulsar fichaje olvidado
-    select_element = driver.find_element(By.ID, "Dropdown_incidencias2")
-    select = Select(select_element)
-    select.select_by_value("85")
     
+
+    fichar("08:00" , "entrada"):
     if isViernes(fecha):
-        print("VIERNES")
+        fichar("08:00" , "entrada"):
     else:
-        print("Otro Dia de la semana")
+        fichar("14:00" , "salida")
+        fichar("15:00" , "entrada"):
+        fichar("17:30" , "salida"):
         
 
 time.sleep(120)

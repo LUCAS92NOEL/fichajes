@@ -17,8 +17,8 @@ ficharDiasPasados = 1;
 urlFechasPasadas = "https://rodassso.ayesa.com/usuario/datosDiarios.aspx?Fecha="
 fechasPasadas = ['04/11/2024', '05/11/2024', '06/11/2024', '07/11/2024', '08/11/2024','11/11/2024']
 
-user= "ntrapero@ayesa.com"
-passs= "4Y3s4123456789-"
+user= ""
+passs= ""
 # ***************** FIN PARAMETROS DE ENTRADA *********************
 
 

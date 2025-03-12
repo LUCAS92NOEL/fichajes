@@ -195,16 +195,21 @@ if ficharDiasPasados == 1:
         ## Comprobar si fichar
         if validarFichar("08:00" , "entrada") == 1:
             fichar("08:00" , "entrada")
+            time.sleep(0.5)
         if isViernes(fecha):
             if validarFichar("14:30" , "salida") == 1:
                 fichar("14:30" , "salida")
+                time.sleep(0.5)
         else:
             if validarFichar("14:00" , "salida") == 1:
                 fichar("14:00" , "salida")
+                time.sleep(0.5)
             if validarFichar("15:00" , "entrada") == 1:
                 fichar("15:00" , "entrada")
+                time.sleep(0.5)
             if validarFichar("17:30" , "salida") == 1:
                 fichar("17:30" , "salida")
+                time.sleep(0.5)
 
 time.sleep(120)
     

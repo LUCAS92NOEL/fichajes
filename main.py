@@ -1,4 +1,5 @@
 from selenium import webdriver
+from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,32 +11,22 @@ from selenium.webdriver.chrome.options import Options
 import time
 import math
 
+user= ""
+passs= ""
+
 # ***************** INI PARAMETROS DE ENTRADA *********************
 url = "https://rodassso.ayesa.com/usuario/Bienvenida.aspx" # URL de la página web a scrapear
 ficharHoyIncidencias = 0;
 ficharDiasPasados = 1;
 urlFechasPasadas = "https://rodassso.ayesa.com/usuario/datosDiarios.aspx?Fecha="
 fechasPasadas = [
-
-  '02/01/2025', '03/01/2025',
-  '07/01/2025', '08/01/2025', '09/01/2025', '10/01/2025',
-  '13/01/2025', '14/01/2025', '15/01/2025', '16/01/2025', '17/01/2025',
-  '20/01/2025', '21/01/2025', '22/01/2025', '23/01/2025', '24/01/2025',
-  '27/01/2025', '28/01/2025', '29/01/2025', '30/01/2025', '31/01/2025',
-
-  
   '03/02/2025', '04/02/2025', '05/02/2025', '06/02/2025', '07/02/2025',
   '10/02/2025', '11/02/2025', '12/02/2025', '13/02/2025', '14/02/2025',
   '17/02/2025', '18/02/2025', '19/02/2025', '20/02/2025', '21/02/2025',
-  '24/02/2025', '25/02/2025', '26/02/2025', '27/02/2025', '28/02/2025',
-
-
-  '03/03/2025', '04/03/2025', '05/03/2025', '06/03/2025', '07/03/2025',
-  '10/03/2025', '11/03/2025', '12/03/2025'
+  '24/02/2025', '25/02/2025', '26/02/2025', '27/02/2025', '28/02/2025'
 ];
 
-user= "ntrapero@ayesa.com"
-passs= "4Y3s412345678911-"
+
 # ***************** FIN PARAMETROS DE ENTRADA *********************
 
 
@@ -85,6 +76,28 @@ def fichar(hora , entradaSalida):
     boton_solicitar = driver.find_element(By.ID, "btnSolicitar").click()
     time.sleep(3)
 
+def transformar_fecha(fecha_str):
+    # Definir los meses en español
+    meses_espanol = {
+        "January": "enero", "February": "febrero", "March": "marzo", "April": "abril",
+        "May": "mayo", "June": "junio", "July": "julio", "August": "agosto",
+        "September": "septiembre", "October": "octubre", "November": "noviembre", "December": "diciembre"
+    }
+    
+    # Convertir la fecha a un objeto datetime
+    fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+    
+    # Obtener el nombre del mes en inglés
+    mes_ingles = fecha.strftime('%B')
+    
+    # Traducir el mes a español
+    mes_espaniol = meses_espanol.get(mes_ingles, mes_ingles)
+    
+    # Formatear la fecha como "2 de enero"
+    fecha_formateada = f"{fecha.day} de {mes_espaniol}"
+    
+    return fecha_formateada
+
 def validarFichar(horaparam , entradaSalida):
     try:
         table_wrapper = driver.find_element(By.ID, 'DataGrid_solicitudes_wrapper')
@@ -133,24 +146,50 @@ if ficharHoyIncidencias==1:
         fichar("17:30" , "salida")
 
 if ficharDiasPasados == 1:
+    time.sleep(1)
+    driver.get('https://rodassso.ayesa.com/usuario/DatosDiarios.aspx')
+    time.sleep(2)
+    driver.get('https://rodassso.ayesa.com/usuario/DatosDiarios.aspx')
+    time.sleep(2)
+    # Espera hasta que el calendario esté visible
+    calendario_div = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "calendario"))
+    )
+    
+    # Paso 1: Obtener el mes actual
+    mes_actual = datetime.now().month  # Mes actual (1 = enero, 2 = febrero, ..., 12 = diciembre)
+    # Paso 2: Extraer el mes de la fecha proporcionada
+    fech = fechasPasadas[0];
+    print(fech)
+    fecha_objeto = datetime.strptime(fech, '%d/%m/%Y')
+    mes_fecha = fecha_objeto.month  # Extraemos el mes de la fecha proporcionada
+    # Paso 3: Calcular la diferencia de meses
+    mesesaAras = mes_actual - mes_fecha
+    print(mesesaAras)
+    # Paso 4: Hacer clic en el botón de retroceder el mes tantas veces como 'mesesaAras'
+    for _ in range(mesesaAras):
+        # Hacer clic en el botón de la flecha para retroceder al mes anterior (enero 2025)
+        prev_month_btn = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "a[title='Go to the previous month']"))
+        )
+        prev_month_btn.click()
+        time.sleep(1)
     for fecha in fechasPasadas:
+
+        fecha_formateada = transformar_fecha(fecha)
+        print(fecha_formateada)
+        xpath_title = f"//a[@title='{fecha_formateada}']"
+
+        # Ahora selecciona el día 02
+        dia = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, xpath_title))
+        )
+        dia.click()
+
+        ## ANTIGUO
         time.sleep(0.5)
-        driver.get('https://rodassso.ayesa.com/usuario/DatosDiarios.aspx')
-        time.sleep(0.5)
-
-        calendario = WebDriverWait(driver, 10).until(
-    EC.visibility_of_element_located((By.ID, "acCalendarioMensual"))
-)
-
-# Buscar el enlace para la fecha "2 de enero" dentro del calendario
-fecha_enero_2 = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, "//a[@title='2 de enero']"))
-)
-
-# Hacer clic en el enlace para seleccionar la fecha
-fecha_enero_2.click()
-
-        time.sleep(1.5)
+        #driver.get(urlFechasPasadas+fecha)
+        #time.sleep(1.5)
         driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1].click()    # PULSAR SOLICITUDES
         time.sleep(0.5)
         ## Comprobar si fichar

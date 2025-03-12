@@ -15,10 +15,27 @@ url = "https://rodassso.ayesa.com/usuario/Bienvenida.aspx" # URL de la página w
 ficharHoyIncidencias = 0;
 ficharDiasPasados = 1;
 urlFechasPasadas = "https://rodassso.ayesa.com/usuario/datosDiarios.aspx?Fecha="
-fechasPasadas = ['04/11/2024', '05/11/2024', '06/11/2024', '07/11/2024', '08/11/2024','11/11/2024']
+fechasPasadas = [
 
-user= ""
-passs= ""
+  '02/01/2025', '03/01/2025',
+  '07/01/2025', '08/01/2025', '09/01/2025', '10/01/2025',
+  '13/01/2025', '14/01/2025', '15/01/2025', '16/01/2025', '17/01/2025',
+  '20/01/2025', '21/01/2025', '22/01/2025', '23/01/2025', '24/01/2025',
+  '27/01/2025', '28/01/2025', '29/01/2025', '30/01/2025', '31/01/2025',
+
+  
+  '03/02/2025', '04/02/2025', '05/02/2025', '06/02/2025', '07/02/2025',
+  '10/02/2025', '11/02/2025', '12/02/2025', '13/02/2025', '14/02/2025',
+  '17/02/2025', '18/02/2025', '19/02/2025', '20/02/2025', '21/02/2025',
+  '24/02/2025', '25/02/2025', '26/02/2025', '27/02/2025', '28/02/2025',
+
+
+  '03/03/2025', '04/03/2025', '05/03/2025', '06/03/2025', '07/03/2025',
+  '10/03/2025', '11/03/2025', '12/03/2025'
+];
+
+user= "ntrapero@ayesa.com"
+passs= "4Y3s412345678911-"
 # ***************** FIN PARAMETROS DE ENTRADA *********************
 
 
@@ -28,10 +45,10 @@ driver.get(url)
 time.sleep(2)
 
 driver.find_element(By.ID, "i0116").send_keys(user)
-driver.find_element(By.XPATH, '//input[@class="win-button button_primary button ext-button primary ext-primary"]').click()
+driver.find_element(By.XPATH, '//input[@class="win-button button_primary high-contrast-overrides button ext-button primary ext-primary"]').click()
 time.sleep(2)
 driver.find_element(By.ID, "i0118").send_keys(passs)
-driver.find_element(By.XPATH, '//input[@class="win-button button_primary button ext-button primary ext-primary"]').click()
+driver.find_element(By.XPATH, '//input[@class="win-button button_primary high-contrast-overrides button ext-button primary ext-primary"]').click()
 time.sleep(15)
 def isViernes(fecha_str):
     fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
@@ -118,7 +135,21 @@ if ficharHoyIncidencias==1:
 if ficharDiasPasados == 1:
     for fecha in fechasPasadas:
         time.sleep(0.5)
-        driver.get(urlFechasPasadas+fecha)
+        driver.get('https://rodassso.ayesa.com/usuario/DatosDiarios.aspx')
+        time.sleep(0.5)
+
+        calendario = WebDriverWait(driver, 10).until(
+    EC.visibility_of_element_located((By.ID, "acCalendarioMensual"))
+)
+
+# Buscar el enlace para la fecha "2 de enero" dentro del calendario
+fecha_enero_2 = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//a[@title='2 de enero']"))
+)
+
+# Hacer clic en el enlace para seleccionar la fecha
+fecha_enero_2.click()
+
         time.sleep(1.5)
         driver.find_elements(By.CSS_SELECTOR, 'ul.nav.nav-tabs li')[1].click()    # PULSAR SOLICITUDES
         time.sleep(0.5)
